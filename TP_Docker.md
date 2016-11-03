@@ -200,13 +200,182 @@ EXPOSE <port_to_expose>
 ```
 
 
+## RubyChat
+
+Dans cette deuxième partie, vous allez devoir monter une architecture avec un client web, une API Ruby et une base de données _moderne_ mongoDB.
+
+Commencez par créer un répertoire nommé ```RubyChat```. Clonez les deux GIT suivants dans ce repertoire :
+
+```
+git clone https://github.com/fthomasmorel/RubyChat-frontend.git RubyChat-Front
+git clone https://github.com/fthomasmorel/RubyChat-backend.git RubyChat-Back
+```
+
+### RubyChat
+
+RubyChat est une application en passe de rivaliser avec les plus grandes applications _moderne_ de messageries instantanné tel que AIM, MSN ou ICQ.
+
+La particularité de RubyChat est qu'il n'existe qu'un seul et unique canal. En outre, tous les messages sont centralisé sur une seule fenetre de conversation. Cela permet de communiquer avec le monde entier de manière très simple 🖖🏼.
+
+D'un point de vue technique, l'application est composée d'une API REST Ruby qui met a disposition 2 endpoints:
+
+```
+GET /messages # return all the messages of the chat
+POST /messages # post a message from the json body on the chat
+```
+
+Un message a pour structure :
+
+```
+{
+	username: String 		# the sender username
+	content: String 		# the message content
+	date: Date 				# the date when the message has been posted
+}
+```
+
+De l'autre coté, une partie front-end, écrite en AngularJS, permet d'afficher l'ensemble des messages ainsi que d'en envoyer.
+
+L'application est en train de grimper dans les charts, et l'équipe de développeur commence a penser au future. 
+
+- Comment rendre l'application RubyChart scalable pour supporter la charge des futures 100 000 000 d'utilisateurs ? 
+- Comment permettre aux développeurs de maintenir facilement leur code ?
+- Quel workflow adopté ?
+
+### RubyChat-Back
+
+La partie backend de l'application a été écrite en ```ruby```. Ce langage utilise un gestionnaire de paquet appelé ```gem```. Cela permet d'installer des dépendences facilement :
+
+```
+gem install <package> # install the given package on the machine
+```
+
+Voici les dépendences de l'API :
+
+```
+sinatra						# framework for the API REST design
+mongo						# ruby client for mongoDB
+bson_ext					# mongoDB stuff
+sinatra-cross_origin		# sinatra stuff to handle cross_origin 
+json						# json lib
+```
+
+Le code entier de l'API est contenu dans ```rubychat.rb```. L'application recoit des requetes HTTP sur le port ```8080```.
+
+### RubyChat-Front
+
+L'application web, quant a elle, a été ecrite avec le framework AngularJS (v1). Voici l'architecture du repertoire RubyChat-Front :
+
+```
+|
+|--css/ 				# contains the CSS for the web app
+|--js/
+|	 |---login.js 		# contains the code to log in the chat
+|	 |---chat.js 		# contains the code to read and send messages
+|
+|--templates/
+|	 |---login.html 	# contains the code for the login view in html
+|	 |---chat.html 		# contains the code for the chat view in html
+|
+|--app.config.js 		# define constant for the web app (API URL)
+|--app.js				# define the AngularJS app
+|--index.html			# the index page of the web app
+|--LICENCE				# who cares?
+```
+
+### Architecture 
+
+![](img/rubychat_architecture.png)
+
+Le serveur web ```nginx``` permet de servir les fichiers de la partie web. Aussi, il redirige les requetes qui arrive sur ```/api``` vers l'application ```ruby```. Cette dernière communique avec la base de données ```mongodb```.
+
 ## Docker-compose
 
-```
-git clone git@github.com:fthomasmorel/RubyChat-frontend.git RubyChat-Front
-git clone git@github.com:fthomasmorel/RubyChat-backend.git RubyChat-Back
-```
+Afin de répondre au problématique posées par les developpeurs de RubyChat, vous allez devoir dockerizer les differents module de l'application. Le but de l'exercice est de voir comment on peut monter une architecture tel que celle de RubyChat en utilsant des containers.
+
+### RubyChat-Front
+
+La première étapes consiste a créer des containers pour chacunes des instances suivantes :
+
+- l'application ruby
+- mongoDB
+- nginx
+
+### Ruby
+
+Créez un ```Dockerfile``` dans le repertoire ```RubyChat-Back```. En partant de l'image docker de base ```ruby```, vous allez devoir définir l'envirionement necessaire a la bonne execution du script ```rubychat.rb``` (cf. définition plus haut). Vous devez :
+
+- Installer les dépendences sur le containers
+- Copier le code source sur le containers
+- Exposer le port de l'API
+- Définir un point d'entré pour executer ```rubychat.rb```
+
+Une fois le ```Dockerfile``` définit, vous pouvez le build avec la commande suivante :
 
 ```
+docker build -t ruby_api:v1 .
+```
+
+Le container ```ruby``` n'ayant pas accès à la base de données mongoDB, il ne peut fonctionner pour l'instant.
+
+### mongoDB
+
+Pour le container ```mongoDB```, rien de plus simple. Il suffit d'utiliser l'image de base docker ```mongodb```. Elle vous permettra de faire tourner une instance de mongoDB facilement.
+
+### nginx
+
+Pour le container ```nginx```, nous allons partir de l'image de base docker ```nginx```. Dans le repertoire ```RubyChat-Front```, créer un fichier ```Dockerfile```. Puis, vous devez :
+
+- Partir de l'image de base ```nginx```
+- Copier un fichier de configuration pour nginx dans ```/etc/nginx/nginx.conf```
+- Copier l'ensemle des fichiers ```angularJS``` sur le container
+- Exposer le port d'écoute de votre ```nginx```.
+
+Enfin, vous pouvez build ce container :
 
 ```
+docker build -t rubychat_nginx:v1 .
+```
+
+Puis tester en bindant le container sur le bon port.
+
+### Configurer docker-compose
+
+```docker-compose``` a besoin de deux fichiers pour être configuré. Un fichier ```docker-compose.yml``` qui permet de définir les containers et leur liens, et un fichier ```requirements.txt``` qui permet de lister les images necessaires à l'architecture définit dans le ```docker-compose.yml```.
+
+À la racine du dossier ```RubyChat```, créez ces deux fichiers. Dans le fichier ```requirements.txt```, listez les images de base que vos containers utilises :
+
+```
+ruby
+mongo
+nginx
+```
+
+Dans le fichier ```docker-compose.yml```, completez le squelette suivant :
+
+```
+version: '1'
+services:
+  nginx:
+    build: ...		# Path to your web server Dockerfile
+    ports:
+     - ...			# Port binding between the host machine and the nginx 
+    depends_on:
+      - ... 		# Container on which nginx depends on
+  ruby_api:
+    build: ...		# Path to your ruby app Dockerfile
+    depends_on:
+     - ...			# Container on which ruby_api depends on
+  mongo:
+    image: ...		# Image for the mongodb container
+```
+
+Pour tester votre installation, utilisez :
+
+```
+docker-compose up # use the --build option to force rebuilding images
+```
+
+Utilisez votre instance de RubyChat sur [http://0.0.0.0:PORT/login](). 
+
+# 🐳
