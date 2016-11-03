@@ -118,3 +118,54 @@ La directive __ADD__ ressemble beaucoup à la directive __COPY__. Cependant, la d
 	CMD    ["x11vnc", "-forever", "-usepw", "-create"]
 
 Vous pouvez retrouver l'intégralité des directives et d'autres exemples dans la documentation officielle de Docker : https://docs.docker.com/engine/reference/builder/
+
+**Les bonnes pratiques**
+
+###Pourquoi utiliser Docker? A quoi sert Docker?
+
+Pour construire et partager des images disques.
+Pour lancer facilement différents OS.
+Parce que contrairement à une VM, c'est très léger en terme de requirement system.
+
+###Quand utiliser Docker?
+
+Quand on veut un système de contrôle de version pour un OS complet
+Quand on veut distribuer/collaborer sur une OS complet avec une équipe
+Quand on veut éxecuter son code sur son PC dans le même environnement que celui du serveur
+Quand l'application dispose de plusieurs phases de développement dev/test/qa/prod
+
+###Cas d'utilisation de Docker
+
+Prenons un cas d'utilisation simple et concret. Une entreprise rennaise, souhaite développer un projet Symfony comme ils savent le faire. Leur équipe est composée de deux personnes.
+
+Valentin est un vieux de la vieille. Lui, Debian 7, c'est parfait. De plus, il est ISO avec les serveurs de production.
+
+ Florent lui est un vrai hippie. Il dispose de la dernière distribution exotique. Lui, PHP, c'est la toute dernière version ou rien. Cependant, il peut générer du code qui ne peut pas s’exécuter correctement avec une version plus vieille, comme celle de Valentin.
+
+Jusqu'à aujourd'hui, on disait tous, « faisons des tests unitaires ». Oui, cela répondait à une bonne partie de nos problèmes (à la condition de faire de bons tests unitaires complets).
+
+En effet, ça pose problème que deux développeurs ne travaillent pas sur les mêmes environnements... Du coup, grâce à Docker, on peut faire en sorte que Valentin et Florent travaillent sur les mêmes versions Linux sans craindre des problèmes de compatibilité entre leurs codes respectifs ?
+
+Exactement! Dans ce cas, le plus simple est de mettre en place un Dockerfile, document "chef d'orchestre", qui permettra à Valentin et à Florent de monter une image similaire. En étant malin, ce Dockerfile sera calqué sur les éléments présents en production. De ce fait, Valentin et Florent en plus de travailler sur un environnement identique, seront sur un environnement similaire à celui de la production !
+
+###Pourquoi Docker c'est bien?
+
+Comme le container n'embarque pas d'OS, à la différence de la machine virtuelle, il est par conséquent beaucoup plus léger que cette dernière. Il n'a pas besoin d'activer un second système pour exécuter ses applications.
+Cela se traduit par un lancement beaucoup plus rapide, mais aussi par la capacité à migrer plus facilement un container d'une machine physique à l'autre, du fait de son faible poids.
+Typiquement, une machine virtuelle pourra peser plusieurs Go, alors qu'un container nu représentera, lui, quelques Mo.
+Grâce à leur légèreté, les containers Docker sont portables de cloud en cloud.
+
+###Côté développement
+
+Docker peut apporter une plus-value en accélérant les déploiements parce que les containers Docker sont légers. Les basculer d'un environnement de développement ou de test à un environnement de production peut donc se faire presque en un clic, ce qui n'est pas le cas pour la VM, plus lourde. Du fait de la disparition de l'OS intermédiaire des VM, les développeurs bénéficient aussi mécaniquement d'une pile applicative plus proche de celle de l'environnement de production.
+
+Docker permet dans le même temps de concevoir une architecture de test plus agile, chaque container de test pouvant intégrer une brique de l'application (base de données, langages, composants...). Pour tester une nouvelle version d'une brique, il suffit d'interchanger le container correspondant. Côté déploiement continu, Docker présente par ailleurs un intérêt car il permet de limiter les mises à jour au container nécessitant de l'être.
+
+###Côté production
+
+Grâce à Docker, il est possible de containériser une application, avec pour chaque couche des containers isolant ses composants. C'est le concept d'architecture de microservices. Ces containers de composant, du fait de leur légèreté, peuvent eux-mêmes, chacun, reposer sur les ressources machines voulues.
+
+Sources:
+http://www.journaldunet.com/solutions/cloud-computing/1146290-cloud-pourquoi-docker-peut-tout-changer/
+
+https://www.wanadev.fr/23-tuto-docker-comprendre-docker-partie1/
