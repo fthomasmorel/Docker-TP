@@ -1,29 +1,29 @@
-# TP Docker
+﻿# TP Docker
 
 ## Objectif
 
-Le but à la fin de ce TP est de pouvoir monter une architecture composé d'un serveur, une application et une base de données. En utilisant Docker, cette architecture sera facilement deployable et scalable.
+Le but de ce TP est de prendre en main Docker et de comprendre pourquoi ce système de virtualisation est de plus en plus utilisé. Pour cela, une première partie va vous permettre de vous familiariser avec le principe de Docker. Dans une deuxième partie, vous allez monter une architecture complète composée d'un serveur, d'une application et d'une base de données. En utilisant Docker, cette architecture sera facilement déployable et "scalable".
 
 ## Premiers Pas
 
 ### Installer Docker
 
-Rendez vous sur la [documentation de Docker](https://docs.docker.com) et suivez les étapes pour installer Docker sur votre machine.
+Si Docker n'est pas installé, rendez-vous sur la [documentation de Docker](https://docs.docker.com) et suivez les étapes pour l'installer sur votre machine.
 
-Verifier que Docker est bien installé en executant la commande suivante :
+Pour vérifier que Docker est bien installé, exécutez la commande suivante :
 
 ```
 $ docker -v            
 ```
-Cela devrait retourner la sortie suivante :
+Cela devrait vous retourner la sortie suivante :
 
 ```
-Docker version 1.12.1, build 6f9534c
+Docker version 1.12.3, build 6b644ec
 ```
 
 ### Lancer un container
 
-Un container Docker est une instance qui permet d'isoler une partie des ressources du système. Un container est different d'une machine virtuelle de part son architecture avec le système (cf. Cours). 
+Un container Docker est la brique de base. C'est une instance qui permet d'isoler une partie des ressources du système. Comme vue en cours, un container est différent d'une machine virtuelle de part son architecture avec le système. (TODO)
 
 Pour commencer, nous allons lancer un container Ubuntu.
 
@@ -31,11 +31,11 @@ Pour commencer, nous allons lancer un container Ubuntu.
 docker run ubuntu /bin/echo 'Hello world'
 ```
 
-Ici, on lance un container basé sur une image Ubuntu et qui va executer la commande "echo" afin d'afficher un "Hello World" à l'écran. À la suite de ça, le container meurt.
+Cette commande permet de lancer un container basé sur une image Ubuntu et va exécuter la commande "echo" afin d'afficher un "Hello World" à l'écran (pour ceux qui n'ont pas le TOEIC, "Bonjour le monde"). À la suite de ça, le container meurt (snif).
 
 ### Daemoniser un container
 
-Executer la commande suivante :
+Exécutez la commande suivante :
 
 ```
 $ docker run -d ubuntu /bin/sh -c "while true; do echo "I am a daemon 😈"; sleep 1; done"
@@ -43,13 +43,13 @@ $ docker run -d ubuntu /bin/sh -c "while true; do echo "I am a daemon 😈"; sle
 
 L'option ```-d``` permet de daemoniser le container. Celui-ci tourne en background. Vous ne voyez pas d'output mise a part un ```containerID```.
 
-### Qui est là ?
+### Toc toc toc ! Qui est là ?
 
-Afficher la liste des containers actifs sur votre machine en utilisant ```docker ps```. Vous devriez retrouver votre container Ubuntu.
+Affichez la liste des containers actifs sur votre machine en utilisant ```docker ps```. Vous devriez retrouver votre container Ubuntu.
 
-### Reprenez le dessus
+### Soyez fort, reprenez le dessus
 
-Retrouver la sortie standard de votre container en l'attachant :
+Retrouvez la sortie standard de votre container en l'attachant à la console :
 
 ```
 $ docker attach <CONTAINER_ID>
@@ -57,31 +57,31 @@ $ docker attach <CONTAINER_ID>
 
 ### Interactive
 
-Lancer un shell sur un container en interactive en utilisant la commande suivante :
+Lancez un shell sur un container en interactif en utilisant la commande suivante :
 
 ```
 $ docker run -it ubuntu /bin/bash
 ```
 
-Vous pouvez alors executer des commandes sur un system linux qui tourne sur un container Docker **#inception**
+Vous pouvez alors exécuter des commandes sur un système Linux qui tourne sur un container Docker de votre machine Linux **#inception**
 
 ## Binding
 
-Le but de cette partie est de vous faire installer un serveur web (Nginx, Apache ou autre) sur un container docker.
+Maintenant, nous allons vous faire installer un serveur web (Nginx, Apache ou autre) sur un container Docker (comme dans la vraie vie).
 
 ```
 $ docker run -it -p 9001:80 ubuntu /bin/bash
 ```
 
-1. Lancer un shell interactif à partir d'une image Ubuntu sur un container et "bind" le port 80 du container sur le port 9001 du host. (cf. Cours)
-2. Installer un Apache ou un Nginx ou autre selon votre choix
+1. Lancer un shell interactif à partir d'une image Ubuntu sur un container et "binder" le port 80 du container sur le port 9001 du host. (cf. Cours)
+2. Installer un serveur Apache ou Nginx ou autre selon votre choix
 3. Ouvrez votre navigateur favoris et rendez vous sur [http://0.0.0.0:9001/](http://0.0.0.0:9001/). Vous devriez voir votre page d'accueil.
 
-Vous accedez alors à votre serveur qui tourne sur le container. C'est super mais ca sert à quoi ? Tkt morray. tu vas voir ça après !
+Vous accédez alors à votre serveur qui tourne sur le container. C'est super mais ça sert à quoi ? Tkt morray, tu vas voir ça après !
 
-## Dockerfile 
+## Dockerfile
 
-Nous avons vu comment créer des containers, les lancer et les binder. Mais le vrai interet de Docker, c'est de pouvoir définir des containers qui tourneront sur n'importe quelle machine. Finis les :
+Pour résumer, nous avons vu comment créer des containers, les lancer et les binder. Mais le vrai intéret de Docker, c'est de pouvoir définir des containers qui tourneront sur n'importe quelle machine. Fini les :
 
 > "But it worked on my machine"
 
@@ -107,7 +107,7 @@ Consultez la liste des images disponible localement avec :
 $ docker images
 ```
 
-Vous devriez voir apparaitre votre nouvelle image. Voilà, vous pouvez desormais lancer plusieurs petit bébé nginx sur votre machine en utilisant :
+Vous devriez voir apparaître votre nouvelle image. Voilà, vous pouvez désormais lancer plusieurs petit bébé nginx sur votre machine en utilisant :
 
 ```
 $ docker run -dit -p 9002:80 <name:version> nginx -g "daemon off;"
@@ -115,7 +115,7 @@ $ docker run -dit -p 9002:80 <name:version> nginx -g "daemon off;"
 
 > L'option de ```-g``` permet de rajouter une direction en dehors du fichier de configuration. Ici, on mentionne que ```nginx``` ne tourne pas en tant que daemon ce qui permet de garder le container actif.
 
-Executer un ```docker ps``` pour voir votre liste de container actif. Vous pouvez arreter un container à l'aide de :
+Exécutez un ```docker ps``` pour voir votre liste de container actif. Vous pouvez arrêter un container à l'aide de :
 
 ```
 $ docker stop <CONTAINER_ID>
@@ -133,13 +133,13 @@ Vous pouvez également utiliser le terminal pour explorer Docker Hub.
 $ docker search <name> # for instance nginx
 ```
 
-Pour télécharger une image, executer :
+Pour télécharger une image, exécutez :
 
 ```
 $ docker pull nginx
 ```
 
-Désormais, lancer le container basé sur l'image nginx en executant :
+Désormais, lancez le container basé sur l'image nginx en exécutant :
 
 ```
 $ docker run -dit -p 9001:80 nginx
@@ -150,12 +150,12 @@ $ docker run -dit -p 9001:80 nginx
 
 Super, on sait monter un container nginx, mais on aimerait bien pouvoir le configurer un petit peu et mettre une page d'accueil.
 
-Il suffit d'utiliser l'option ```-v``` pour executer l'équivalent d'un binding entre la machine host et le container.
+Il suffit d'utiliser l'option ```-v``` pour exécuter l'équivalent d'un binding entre la machine host et le container.
 
-Créer un répertoire ```nginx```. Dans ce répertoire, créer un fichier html (```test.html``` par exemple) et ajoutez-y du code (faites pas un truc qui clignottes, ca fait mal aux yeux 😎). Depuis le répertoire ```nginx```, lancer un container "nginx" avec l'option ```-v```, tel que :
+Créez un répertoire ```nginx```. Dans ce répertoire, créez un fichier HTML (```test.html``` par exemple) et ajoutez-y du code (faites pas un truc qui clignotte, ça fait mal aux yeux 😎). Depuis le répertoire ```nginx```, lancer un container "nginx" avec l'option ```-v```, tel que :
 
 ```
-$ docker run -dit -p 9001:80 -v $PWD:/usr/share/nginx/html nginx 
+$ docker run -dit -p 9001:80 -v $PWD:/usr/share/nginx/html nginx
 ```
 
 Ici, on indique que notre répertoire courant (```$PWD```) sera relié à ```/usr/share/nginx/html```. Ce dernier répertoire est le repertoire du serveur web nginx. Rendez-vous sur [http://0.0.0.0:9001/test.html](http://0.0.0.0:9001/test.html).
@@ -164,7 +164,7 @@ Il est possible de partager des fichiers, ou de copier des fichers sur le contai
 
 ## Exercice
 
-Pour débloquer la suite de ce TP, vous devez créer un container à partir de l'image ```tp_docker_insa```. Lancer ce container afin qu'il execute la commande ```decrypt``` qui prend en paramètre la chaine suivante :
+Pour débloquer la suite de ce TP, vous devez créer un container à partir de l'image ```tp_docker_insa```. Lancez ce container afin qu'il exécute la commande ```decrypt``` qui prend en paramètre la chaîne suivante :
 
 > "tIzFzHFzSaaF9vaHKC1F01HF39aaF6IzHWFI3F01HF3IWwH"
 
