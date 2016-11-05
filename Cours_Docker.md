@@ -3,7 +3,7 @@ Docker - Build, Ship, Run
 
 **Présentation**
 
-L'objectif de ce cours est de présenter et d'utiliser Docker afin d'automatiser le déploiement d'applications dans des conteneurs logiciels. De plus en plus populaire, cet outil permet de faire de la virtualisation dite "légère" et donc d'améliorer les performances de ses applications. Dans un premier temps, nous allons découvrir les particularités de Docker et sa prise en main. Dans un second temps, nous allons mettre en pratique 
+L'objectif de ce cours est de présenter et d'utiliser Docker afin d'automatiser le déploiement d'applications dans des conteneurs logiciels. De plus en plus populaire, cet outil permet de faire de la virtualisation dite "légère" et donc d'améliorer les performances de ses applications. Dans un premier temps, nous allons découvrir les particularités de Docker et sa prise en main. Dans un second temps, nous allons mettre en pratique
 
 **Sommaire**
 
@@ -16,7 +16,7 @@ L'objectif de ce cours est de présenter et d'utiliser Docker afin d'automatiser
  6. Docker Compose
  7. Les bonnes pratiques
  8. Docker Hub: Comment automatiser son workflow
- 
+
 **Historique de la virtualisation**
 
 Les premiers travaux de virtualisation (ie faire fonctionner un ou plusieurs systèmes d'exploitation/applications comme un simple logiciel, sur un ou plusieurs ordinateurs/serveurs) ont été développé dans les années 1970 par IBM à Cambridge et le MIT.
@@ -32,17 +32,17 @@ Pour résumer, quatre périodes clées à retenir sur la virtualisation :
  2. 1980-90 : virtualisation sur ordinateurs personnels
  3. 2000 : popularisation de la virtualisation
  4. 2010 : nouveau système léger : Docker
- 
+
  **Virtualisation lourde**
- 
+
  TODO
- 
+
  ** Virtualisation légère**
- 
+
  TODO
- 
+
  ** Comparaison**
- 
+
  TODO
 
 **Un peu de vocabulaire**
@@ -61,20 +61,20 @@ Docker utilise les _directives_ d'un _Dockerfile_ afin de construire un _contene
 
 La directive __FROM__ indique à partir de quelle _image_ va être construite la nouvelle. Le _tag_ correspond a la version de l'image qui va être utilisée. Le _tag_ est facultatif et est _latest_ par défaut.
 
-####MAINTAINER 
+####MAINTAINER
 
 	MAINTAINER <name>
 
 La directive __MAINTAINER__ permet de mentionner l'auteur de l'image.
 
-####RUN 
+####RUN
 
 	RUN <command>
 	RUN ["executable", "param1", "param2"]
 
 La directive __RUN__ possède deux syntaxes différentes. Celle-ci, comme son nom l'indique, permet d'exécuter des commandes au sein de l'image lors de la construction. A noter que le répertoire d’exécution de ces commandes peut être défini à l'aide de la directive __WORKDIR__.
 
-####WORKDIR 
+####WORKDIR
 
 	WORKDIR /path/to/workdir
 
@@ -86,14 +86,14 @@ La directive __WORKDIR__ permet de définir le répertoire courant pour l'ensemb
 
 La directive __USER__ permet de définir l'utilisateur qui exécutera les directives __RUN__, __CMD__ and __ENTRYPOINT__ qui suivent dans le _Dockerfile_.
 
-####CMD 
+####CMD
 
 	CMD ["executable","param1","param2"]
 	CMD command param1 param2
 
 La directive __CMD__ définie la première commande qui sera exécutée par un _conteneur_ construit à partir de cette _image_.  A noter que si plusieurs directives__CMD__ sont présente sans le Dockerfile, seule la dernière sera prise en compte.
 
-####EXPOSE 
+####EXPOSE
 
 	EXPOSE <port> [<port>...]
 
@@ -151,49 +151,60 @@ Vous pouvez retrouver l'intégralité des directives et d'autres exemples dans l
 
 ###Pourquoi utiliser Docker? A quoi sert Docker?
 
-Pour construire et partager des images disques.
-Pour lancer facilement différents OS.
-Parce que contrairement à une VM, c'est très léger en terme de requirement system.
+Pour résumer, Docker permet de construire et partager très facilement des images disques. Il permet aussi de lancer facilement différents OS. De plus, contrairement à une VM, Docker est très léger en termes de configurations minimales.
+
 
 ###Quand utiliser Docker?
 
-Quand on veut un système de contrôle de version pour un OS complet
-Quand on veut distribuer/collaborer sur une OS complet avec une équipe
-Quand on veut éxecuter son code sur son PC dans le même environnement que celui du serveur
-Quand l'application dispose de plusieurs phases de développement dev/test/qa/prod
+Docker est utile dans de nombreuses situations et notamment quand :
+- on veut un système de contrôle de version pour un OS complet,
+- on veut distribuer/collaborer sur une OS complet avec une équipe,
+- on veut exécuter son code sur son PC dans le même environnement que celui du serveur,
+- l'application dispose de plusieurs phases de développement en même temps dev/test/qa/prod
+
 
 ###Cas d'utilisation de Docker
 
 Prenons un cas d'utilisation simple et concret. Une entreprise rennaise, souhaite développer un projet Symfony comme ils savent le faire. Leur équipe est composée de deux personnes.
-
 Valentin est un vieux de la vieille. Lui, Debian 7, c'est parfait. De plus, il est ISO avec les serveurs de production.
 
- Florent lui est un vrai hippie. Il dispose de la dernière distribution exotique. Lui, PHP, c'est la toute dernière version ou rien. Cependant, il peut générer du code qui ne peut pas s’exécuter correctement avec une version plus vieille, comme celle de Valentin.
+Florent lui est un vrai hippie. Il dispose de la dernière distribution exotique. Pour lui, PHP, c'est la toute dernière version ou rien. Cependant, il peut générer du code qui ne peut pas s’exécuter correctement avec une version plus vieille, comme celle de Valentin.
+Jusqu'à aujourd'hui, la réponse donnée était : « faisons des tests unitaires ». Oui, cela répondait à une bonne partie de nos problèmes (à la condition de faire de bons tests unitaires complets).
 
-Jusqu'à aujourd'hui, on disait tous, « faisons des tests unitaires ». Oui, cela répondait à une bonne partie de nos problèmes (à la condition de faire de bons tests unitaires complets).
+En effet, ça pose problème que deux développeurs ne travaillent pas sur les mêmes environnements...
 
-En effet, ça pose problème que deux développeurs ne travaillent pas sur les mêmes environnements... Du coup, grâce à Docker, on peut faire en sorte que Valentin et Florent travaillent sur les mêmes versions Linux sans craindre des problèmes de compatibilité entre leurs codes respectifs ?
+Du coup, grâce à Docker, on peut faire en sorte que Valentin et Florent travaillent sur les mêmes versions Linux sans craindre des problèmes de compatibilité entre leurs codes respectifs ?
 
-Exactement! Dans ce cas, le plus simple est de mettre en place un Dockerfile, document "chef d'orchestre", qui permettra à Valentin et à Florent de monter une image similaire. En étant malin, ce Dockerfile sera calqué sur les éléments présents en production. De ce fait, Valentin et Florent en plus de travailler sur un environnement identique, seront sur un environnement similaire à celui de la production !
 
-###Pourquoi Docker c'est bien?
+Exactement! Dans ce cas, le plus simple est de mettre en place un Dockerfile, document "chef d'orchestre" (présenté précédemment), qui permettra à Valentin et à Florent de monter une image similaire. En étant malin, ce Dockerfile sera calqué sur les éléments présents en production. De ce fait, Valentin et Florent en plus de travailler sur un environnement identique, seront sur un environnement similaire à celui de la production!
+
+###Quels sont les vrais avantages de Docker?
 
 Comme le container n'embarque pas d'OS, à la différence de la machine virtuelle, il est par conséquent beaucoup plus léger que cette dernière. Il n'a pas besoin d'activer un second système pour exécuter ses applications.
 Cela se traduit par un lancement beaucoup plus rapide, mais aussi par la capacité à migrer plus facilement un container d'une machine physique à l'autre, du fait de son faible poids.
-Typiquement, une machine virtuelle pourra peser plusieurs Go, alors qu'un container nu représentera, lui, quelques Mo.
-Grâce à leur légèreté, les containers Docker sont portables de cloud en cloud.
+Typiquement, une machine virtuelle pourra peser plusieurs Go, alors qu'un container nu représentera, lui, quelques Mo. Grâce à leur légèreté, les containers Docker sont portables de cloud en cloud.
 
-###Côté développement
+
+####Côté développement
 
 Docker peut apporter une plus-value en accélérant les déploiements parce que les containers Docker sont légers. Les basculer d'un environnement de développement ou de test à un environnement de production peut donc se faire presque en un clic, ce qui n'est pas le cas pour la VM, plus lourde. Du fait de la disparition de l'OS intermédiaire des VM, les développeurs bénéficient aussi mécaniquement d'une pile applicative plus proche de celle de l'environnement de production.
 
-Docker permet dans le même temps de concevoir une architecture de test plus agile, chaque container de test pouvant intégrer une brique de l'application (base de données, langages, composants...). Pour tester une nouvelle version d'une brique, il suffit d'interchanger le container correspondant. Côté déploiement continu, Docker présente par ailleurs un intérêt car il permet de limiter les mises à jour au container nécessitant de l'être.
+Docker permet dans le même temps de concevoir une architecture de test plus agile, chaque container de test pouvant intégrer une brique de l'application (base de données, langages, composants...). Pour tester une nouvelle version d'une brique, il suffit d'inter changer le container correspondant. Côté déploiement continu, Docker présente par ailleurs un intérêt car il permet de limiter les mises à jour au container nécessitant de l'être.
 
-###Côté production
+####Côté production
 
-Grâce à Docker, il est possible de containériser une application, avec pour chaque couche des containers isolant ses composants. C'est le concept d'architecture de microservices. Ces containers de composant, du fait de leur légèreté, peuvent eux-mêmes, chacun, reposer sur les ressources machines voulues.
+Grâce à Docker, il est possible de containériser une application, avec pour chaque couche des containers isolant ses composants. C'est le concept d'architecture de micro services. Ces containers de composant, du fait de leur légèreté, peuvent eux-mêmes, chacun, reposer sur les ressources machines voulues.
 
 Sources:
 http://www.journaldunet.com/solutions/cloud-computing/1146290-cloud-pourquoi-docker-peut-tout-changer/
-
 https://www.wanadev.fr/23-tuto-docker-comprendre-docker-partie1/
+
+
+
+**Docker Hub: Comment automatiser son workflow**
+
+La construction d'une image docker peut parfois être longue et répétitive lorsqu'il s'agit de mettre à jour un ou plusieurs _layers_ de son image. Il peut aussi être nécessaire d'intégrer à son _workflow_ la construction d'_images_ en fin de chaîne pour ensuite les distribuer facilement. La plateforme Docker Hub propose gratuitement pour des projets open source, de se lier à votre compte Github afin de récréer une image à chaque modification sur votre _repository_. Pour cela, il suffit simplement de lier votre Github à Docker Hub. Ensuite, en créant un simple _repository_ contenant votre Dockerfile, il est possible de faire en sorte qu'à chaque _commit_, _l'image_ soit recréée automatiquement et ensuite proposée sur la plateforme Docker Hub. Dès lors, un simple `docker pull <login>/<image>` suffira à télécharger l'image depuis n'importe qu'elle instance Docker. Pour allez plus loin, sachez qu'il est possible d'héberger soi-même son propre registre docker afin de garder privé ses images.
+
+Sources:
+https://docs.docker.com/registry/deploying/
+https://hub.docker.com/
