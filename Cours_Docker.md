@@ -53,7 +53,7 @@ On parle de _machine hôte_ ou _host machine_ lorsqu'il s'agit du système d'exp
 
 **Le Dockerfile**
 
-Docker utilise les _directives_ d'un _Dockerfile_ afin de construire un _conteneur_. Ces _directives_ sont exécutées à la suite les unes des autres. Le _contexte_ dans lequel une _image_ est construite est tout aussi important. Enfin, Docker décompose chacune des étapes de la construction d'un image en _layers_ ou _couches_. Ce mécanisme permet d'augmenter de manière significative des constructions ultérieures. En effet, un _layer_ pré-existant pourra être utilisé afin d'augmenter la vitesse de construction.
+Docker utilise les _directives_ d'un _Dockerfile_ afin de construire un _conteneur_. Ces _directives_ sont exécutées à la suite les unes des autres. Le _contexte_ dans lequel une _image_ est construite est tout aussi important. Enfin, Docker décompose chacune des étapes de la construction d'un image en _layers_ ou __couches_. Ce mécanisme permet d'augmenter de manière significative des constructions ultérieures. En effet, un _layer_ pré-existant pourra être utilisé afin d'augmenter la vitesse de construction.
 
 ####FROM
 
@@ -84,7 +84,7 @@ La directive __WORKDIR__ permet de définir le répertoire courant pour l'ensemb
 
 	USER elucterio
 
-La directive __USER__ permet de définir l'utilisateur qui exécutera les directives __RUN__, __CMD__ and __ENTRYPOINT__ qui suivent dans le _Dockerfile_.
+La directive __USER__ permet de définir l'utilisateur qui exécutera les directives __RUN__, __CMD__ and __ENTRYPOINT __ qui suivent dans le _Dockerfile_.
 
 ####CMD
 
