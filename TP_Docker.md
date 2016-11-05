@@ -38,7 +38,7 @@ Ici, on lance un container basé sur une image Ubuntu et qui va executer la comm
 Executer la commande suivante :
 
 ```
-$ docker run -d ubuntu /bin/sh -c "while true; do echo "I am a daemon 😈"; sleep 1; done"
+$ docker run -d ubuntu /bin/sh -c "while true; do echo 'I am a daemon 😈'; sleep 1; done"
 ```
 
 L'option ```-d``` permet de daemoniser le container. Celui-ci tourne en background. Vous ne voyez pas d'output mise a part un ```containerID```.
@@ -65,17 +65,32 @@ $ docker run -it ubuntu /bin/bash
 
 Vous pouvez alors executer des commandes sur un system linux qui tourne sur un container Docker **#inception**
 
+Selon votre OS de la machine host, vous n'avez pas acces à internet depuis le container. Sur les machines du départements informatique, il vous faudra rajouter l'option ```--net=host```. Ainsi, les ports de la machine host seront directement bindé au port du container et vous pourrez avoir accès à internet depuis le container.
+
+```
+$ docker run --net=host -it ubuntu /bin/bash
+```
+
 ## Binding
 
 Le but de cette partie est de vous faire installer un serveur web (Nginx, Apache ou autre) sur un container docker.
 
+
+1. Lancer un shell interactif à partir d'une image Ubuntu sur un container (et "bind" le port 80 du container sur le port 80 du host si vous n'êtes pas sur une machine du département).
+2. Installer un Apache ou un Nginx ou autre selon votre choix
+3. Ouvrez votre navigateur favoris et rendez vous sur [http://0.0.0.0](http://0.0.0.0/). Vous devriez voir votre page d'accueil.
+
+Sur les machines du département :
+
 ```
-$ docker run -it -p 9001:80 ubuntu /bin/bash
+$ docker run --net=host -it  ubuntu /bin/bash
 ```
 
-1. Lancer un shell interactif à partir d'une image Ubuntu sur un container et "bind" le port 80 du container sur le port 9001 du host. (cf. Cours)
-2. Installer un Apache ou un Nginx ou autre selon votre choix
-3. Ouvrez votre navigateur favoris et rendez vous sur [http://0.0.0.0:9001/](http://0.0.0.0:9001/). Vous devriez voir votre page d'accueil.
+Sur une autre machine :
+
+```
+$ docker run --net=host -it -p 9001:80 ubuntu /bin/bash
+```
 
 Vous accedez alors à votre serveur qui tourne sur le container. C'est super mais ca sert à quoi ? Tkt morray. tu vas voir ça après !
 
@@ -85,7 +100,7 @@ Nous avons vu comment créer des containers, les lancer et les binder. Mais le v
 
 > "But it worked on my machine"
 
-En vous aidant du cours, créer un Dockerfile qui fait tourner sur le port 80 un serveur web Nginx, qui est bind au port 9001 de la machine host.
+En vous aidant du cours, créer un fichier ```Dockerfile``` qui fait tourner sur le port 80 un serveur web Nginx, qui est bind au port 9001 de la machine host.
 
 ```
 FROM ubuntu
@@ -98,7 +113,7 @@ RUN "nginx"
 Buildez l'image de votre container basé sur le Dockerfile en utilisant la commande suivante :
 
 ```
-$ docker build <name:version> -t .
+$ docker build -t <name:version> .
 ```
 
 Consultez la liste des images disponible localement avec :
