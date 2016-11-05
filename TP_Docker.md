@@ -2,20 +2,21 @@
 
 ## Objectif
 
-Le but à la fin de ce TP est de pouvoir monter une architecture composé d'un serveur, une application et une base de données. En utilisant Docker, cette architecture sera facilement deployable et scalable.
+Le but de ce TP est de prendre en main Docker et de comprendre pourquoi cet outil est de plus en plus utilisé. Pour cela, une première partie va vous permettre de vous familiariser avec le principe de Docker. Dans une deuxième partie, vous allez monter une architecture complète composée d'un serveur, d'une application et d'une base de données. En utilisant Docker, cette architecture sera facilement déployable et "scalable".
 
 ## Premiers Pas
 
 ### Installer Docker
 
-Rendez vous sur la [documentation de Docker](https://docs.docker.com) et suivez les étapes pour installer Docker sur votre machine.
+Rendez-vous sur la [documentation de Docker](https://docs.docker.com) et suivez les étapes pour installer Docker sur votre machine.
 
-Verifier que Docker est bien installé en executant la commande suivante :
+Pour vérifier que Docker est bien installé, exécutez la commande suivante :
 
 ```
-$ docker -v            
+$ docker -v
 ```
-Cela devrait retourner la sortie suivante :
+
+Cela devrait retourner la sortie suivante (ou un truc similaire) :
 
 ```
 Docker version 1.12.1, build 6f9534c
@@ -23,19 +24,23 @@ Docker version 1.12.1, build 6f9534c
 
 ### Lancer un container
 
-Un container Docker est une instance qui permet d'isoler une partie des ressources du système. Un container est different d'une machine virtuelle de part son architecture avec le système (cf. Cours). 
+Un container Docker est une instance qui permet d'isoler une partie des ressources du système. Un container est différent d'une machine virtuelle de part son architecture avec le système (cf. Cours). 
 
-Pour commencer, nous allons lancer un container Ubuntu.
+Pour commencer, nous allons lancer un container ```Ubuntu```.
 
 ```
 docker run ubuntu /bin/echo 'Hello world'
 ```
 
-Ici, on lance un container basé sur une image Ubuntu et qui va executer la commande "echo" afin d'afficher un "Hello World" à l'écran. À la suite de ça, le container meurt.
+Cette commande permet de lancer un container basé sur une image ```Ubuntu```. Ce dernier va exécuter la commande "echo" afin d'afficher un "Hello World" à l'écran. 
+
+> Pour ceux qui n'ont pas le TOEIC, comprenez : "Bonjour le monde"
+ 
+À la suite de ça, le container meurt 😭.
 
 ### Daemoniser un container
 
-Executer la commande suivante :
+Exécuter la commande suivante :
 
 ```
 $ docker run -d ubuntu /bin/sh -c "while true; do echo 'I am a daemon 😈'; sleep 1; done"
@@ -43,13 +48,19 @@ $ docker run -d ubuntu /bin/sh -c "while true; do echo 'I am a daemon 😈'; sle
 
 L'option ```-d``` permet de daemoniser le container. Celui-ci tourne en background. Vous ne voyez pas d'output mise a part un ```containerID```.
 
-### Qui est là ?
+### Toc toc toc... Qui est là ?
 
-Afficher la liste des containers actifs sur votre machine en utilisant ```docker ps```. Vous devriez retrouver votre container Ubuntu.
+Affichez la liste des containers actifs sur votre machine en utilisant ```docker ps```. Vous devriez retrouver votre container ```Ubuntu``` qui tourne sur votre machine host.
 
-### Reprenez le dessus
+Grâce à ```docker ps -a``` vous pouvez avoir la liste de tous les containers déjà créés, actifs ou non. Si vous voulez relancer un ancien container utilisez :
 
-Retrouver la sortie standard de votre container en l'attachant :
+```
+docker start <CONTAINER_ID>
+```
+
+### Soyez fort, reprenez le dessus
+
+Retrouvez la sortie standard de votre container en l'attachant :
 
 ```
 $ docker attach <CONTAINER_ID>
@@ -57,50 +68,49 @@ $ docker attach <CONTAINER_ID>
 
 ### Interactive
 
-Lancer un shell sur un container en interactive en utilisant la commande suivante :
+Lancez un shell sur un container interactif en utilisant la commande suivante :
 
 ```
 $ docker run -it ubuntu /bin/bash
 ```
 
-Vous pouvez alors executer des commandes sur un system linux qui tourne sur un container Docker **#inception**
+L'option ```-i``` permet de garder la main sur le container. L'option ```-t``` crée un ```TTY``` pour le container. Retenez ici que ```-it``` permet de faire un container interactif.
 
-Selon votre OS de la machine host, vous n'avez pas acces à internet depuis le container. Sur les machines du départements informatique, il vous faudra rajouter l'option ```--net=host```. Ainsi, les ports de la machine host seront directement bindé au port du container et vous pourrez avoir accès à internet depuis le container.
+Vous pouvez alors exécuter des commandes sur un système Linux qui tourne sur un container Docker de votre machine Linux **#inception**. 
 
-```
-$ docker run --net=host -it ubuntu /bin/bash
-```
+> T'as je veux dire pas ? #b2o
 
 ## Binding
 
-Le but de cette partie est de vous faire installer un serveur web (Nginx, Apache ou autre) sur un container docker.
+Le but de cette partie est de vous faire installer un serveur web Nginx sur un container docker.
 
+1. Lancez un shell interactif sur un container basé sur une image Ubuntu. N'oubliez pas de binder un port de la machine host (le port 80 par exemple) au port 80 de votre container.
+2. Installez Nginx
+3. Sur votre machine locale, ouvrez votre navigateur favori et rendez-vous sur ```http://<VOTRE-ADRESSE-IP>:<VOTRE-PORT>```. Vous devriez voir la page d'accueil nginx.
 
-1. Lancer un shell interactif à partir d'une image Ubuntu sur un container (et "bind" le port 80 du container sur le port 80 du host si vous n'êtes pas sur une machine du département).
-2. Installer un Apache ou un Nginx ou autre selon votre choix
-3. Ouvrez votre navigateur favoris et rendez vous sur [http://0.0.0.0](http://0.0.0.0/). Vous devriez voir votre page d'accueil.
+> Pour info, l'INSA n'autorise des connexions que sur les ports 80 et 443.
 
-Sur les machines du département :
+Vous accédez alors à votre serveur web qui tourne sur le container. C'est super mais ça sert à quoi ?
 
-```
-$ docker run --net=host -it  ubuntu /bin/bash
-```
-
-Sur une autre machine :
-
-```
-$ docker run --net=host -it -p 9001:80 ubuntu /bin/bash
-```
-
-Vous accedez alors à votre serveur qui tourne sur le container. C'est super mais ca sert à quoi ? Tkt morray. tu vas voir ça après !
+> Tkt morray. Tu vas voir ça après !
 
 ## Dockerfile 
 
-Nous avons vu comment créer des containers, les lancer et les binder. Mais le vrai interet de Docker, c'est de pouvoir définir des containers qui tourneront sur n'importe quelle machine. Finis les :
+Nous avons vu comment créer des containers, les lancer et les binder au port de la machine host. Mais le vrai intêret de Docker, c'est de pouvoir définir des containers qui tourneront sur n'importe quelle machine. Fini les :
 
 > "But it worked on my machine"
 
-En vous aidant du cours, créer un fichier ```Dockerfile``` qui fait tourner sur le port 80 un serveur web Nginx, qui est bind au port 9001 de la machine host.
+Ou pour ceux qui n'ont pas le TOEIC :
+
+> "Mais ça marchait sur ma machine !
+
+En vous aidant du cours, créez un fichier ```Dockerfile``` qui : 
+
+- Se base sur une image ```ubuntu```
+- Installe un ```nginx```
+- Expose le port 80
+
+
 
 ```
 FROM ubuntu
@@ -116,21 +126,21 @@ Buildez l'image de votre container basé sur le Dockerfile en utilisant la comma
 $ docker build -t <name:version> .
 ```
 
-Consultez la liste des images disponible localement avec :
+Consultez la liste des images disponibles localement avec :
 
 ```
 $ docker images
 ```
 
-Vous devriez voir apparaitre votre nouvelle image. Voilà, vous pouvez desormais lancer plusieurs petit bébé nginx sur votre machine en utilisant :
+Vous devriez voir apparaître votre nouvelle image. Voilà, vous pouvez désormais lancer plusieurs petits bébés nginx sur votre machine en utilisant :
 
 ```
-$ docker run -dit -p 9002:80 <name:version> nginx -g "daemon off;"
+$ docker run -dit -p 80:80 <name:version> nginx -g "daemon off;"
 ```
 
 > L'option de ```-g``` permet de rajouter une direction en dehors du fichier de configuration. Ici, on mentionne que ```nginx``` ne tourne pas en tant que daemon ce qui permet de garder le container actif.
 
-Executer un ```docker ps``` pour voir votre liste de container actif. Vous pouvez arreter un container à l'aide de :
+Exécutez un ```docker ps``` pour voir votre liste des containers actifs. Vous pouvez arrêter un container à l'aide de :
 
 ```
 $ docker stop <CONTAINER_ID>
@@ -140,50 +150,66 @@ $ docker stop <CONTAINER_NAME>
 
 ## Docker Hub
 
-Une manière plus simple de monter un container ```nginx``` est d'utiliser l'image officiel disponible sur ```DockerHub```. Pour se faire, rendez-vous sur [https://hub.docker.com](https://hub.docker.com). Vous pourrez alors chercher des images préfaites tel que celle de ```nginx```. 
+Une manière plus simple de monter un container ```nginx``` est d'utiliser l'image officielle disponible sur ```Docker Hub```. Pour se faire, rendez-vous sur [https://hub.docker.com](https://hub.docker.com). Vous pourrez alors chercher des images préfaites telles que celle de ```nginx```. 
 
-Vous pouvez également utiliser le terminal pour explorer Docker Hub.
+Vous pouvez également utiliser le terminal pour explorer ```Docker Hub``` :
 
 ```
-$ docker search <name> # for instance nginx
+$ docker search <name> # for instance "nginx"
 ```
 
-Pour télécharger une image, executer :
+Pour télécharger une image, exécutez :
 
 ```
 $ docker pull nginx
 ```
 
-Désormais, lancer le container basé sur l'image nginx en executant :
+Désormais, lancez le container basé sur l'image nginx en exécutant :
 
 ```
-$ docker run -dit -p 9001:80 nginx
-# docker run -dit -p PORT:80 <img_name>
+$ docker run -dit -p 80:80 nginx
+# docker run -dit -p <PORT_HOST>:<PORT_CONTAINER> <img_name>
 ```
 
 ## Volume partagé 
 
-Super, on sait monter un container nginx, mais on aimerait bien pouvoir le configurer un petit peu et mettre une page d'accueil.
+Super, on sait monter un container ```nginx```, mais on aimerait bien pouvoir le configurer un petit peu et mettre une page d'accueil custom HTML. Par défaut, ```nginx``` distribue les fichiers présents dans le répertoire ```/usr/share/nginx/html/```. Ainsi, si vous créez un fichier ```index.html``` dans ce répertoire du container, vous allez changer la page d'accueil de ```nginx```.
 
-Il suffit d'utiliser l'option ```-v``` pour executer l'équivalent d'un binding entre la machine host et le container.
+Pour partager un volume entre la machine host et le container, il suffit d'utiliser l'option ```-v <HOST_DIR>:<CONTAINER_DIR>``` pour exécuter l'équivalent d'un binding mais pour le partage de volume.
 
-Créer un répertoire ```nginx```. Dans ce répertoire, créer un fichier html (```test.html``` par exemple) et ajoutez-y du code (faites pas un truc qui clignottes, ca fait mal aux yeux 😎). Depuis le répertoire ```nginx```, lancer un container "nginx" avec l'option ```-v```, tel que :
+Sur votre host (eg. seveur distant), créez un répertoire ```nginx```. Dans ce répertoire, créez un fichier ```index.html``` et ajoutez-y du code.
+
+> Faites pas un truc qui clignotte, ça fait mal aux yeux 😎. 
+
+Vous pouvez utiliser le squelette HTML disponible [ici](http://colorier.rapide.net/images/squelette-3.jpg). Depuis le répertoire ```nginx```, lancez un container "nginx" avec l'option ```-v```, tel que :
 
 ```
-$ docker run -dit -p 9001:80 -v $PWD:/usr/share/nginx/html nginx 
+$ docker run -dit -p 80:80 -v $PWD:/usr/share/nginx/html nginx 
 ```
 
-Ici, on indique que notre répertoire courant (```$PWD```) sera relié à ```/usr/share/nginx/html```. Ce dernier répertoire est le repertoire du serveur web nginx. Rendez-vous sur [http://0.0.0.0:9001/test.html](http://0.0.0.0:9001/test.html).
+Ici, on indique que notre répertoire courant ```$PWD``` sera relié à ```/usr/share/nginx/html```. Ce dernier répertoire est le répertoire du serveur web nginx. Rendez-vous sur ```http://<VOTRE_ADRESSE_IP>```.
 
-Il est possible de partager des fichiers, ou de copier des fichers sur le container en utilsant ```docker cp``` ou la directive ```COPY``` dans le Dockerfile.
+Il est possible de partager des fichiers, ou bien de copier des fichers sur le container en utilisant ```docker cp``` ou la directive ```COPY``` dans le Dockerfile.
 
-## Exercice
+## Cheatsheet Docker
 
-Pour débloquer la suite de ce TP, vous devez créer un container à partir de l'image ```tp_docker_insa```. Lancer ce container afin qu'il execute la commande ```decrypt``` qui prend en paramètre la chaine suivante :
+Bob a souhaité vous transmettre sa cheatsheet Docker, une liste de commandes bien utiles qui vous sauveront la vie quand vous sortirez de l'INSA. Mais pour plus de sécurité, et comme Bob a fait l'option TMMD en 5INFO (même si à la base c'est un LSR mais ce n'est pas l'objet du problème ici), il a chiffré avec un algorithme "super-puissant" le contenu suivant :
 
-> "tIzFzHFzSaaF9vaHKC1F01HF39aaF6IzHWFI3F01HF3IWwH"
+```
+$ithpjw%wzs%ANRFLJC%AHTRRFSIdYTdJ]JHZYJC%(%xyfwy%f%htsyfnsjw$ithpjw%wzs%2ny%ANRFLJC%4gns4gfxm%(%xyfwy%f%htsyfnsjw%fsi%ljy%ymj%xmjqq$ithpjw%wzs%2i%ANRFLJC%AHTRRFSIdYTdJ]JHZYJC%(%xyfwy%f%htsyfnsjw%ns%ymj%gfhplwtzsi$ithpjw%wzs%`333b%2u%UTWYdMTXY?UTWYdIJXY%ANRFLJC%AHTRRFSIdYTdJ]JHZYJC%(%gnsi%utwy%tk%f%htsyfnsjw$ithpjw%wzs%`333b%2{%ufym4yt4mtxy4inw?ufym4yt4htsyfnsjw4inw%ANRFLJC%AHTRRFSIdYTdJ]JHZYJC%(%xmfwj%{tqzrj%gjy|jjs%mtxy%rfhmnsj%fsi%htsyfnsjw$$ithpjw%ux%(%qnxy%fqq%wzssnsl%htsyfnsjw$ithpjw%xytu%AHTSYFNSJWdNIC%(%xytu%f%ln{js%htsyfnsjw%nyx%NI$ithpjw%xytu%ASFRJdNIC%(%xytu%f%ln{js%htsyfnsjw%|nym%nyx%sfrj$ithpjw%xyfwy%AHTSYFNSJWdNIC%(%xyfwy%f%ln{js%htsyfnsjw%nyx%NI$ithpjw%xyfwy%ASFRJdNIC%(%xyfwy%f%ln{js%htsyfnsjw%|nym%nyx%sfrj$ithpjw%fyyfhm%AHTSYFNSJWdNIC%(%fyyfhm%f%ifjrtsn
+ji%ithpjw$$ithpjw%gznqi%2y%ASFRJ?[JWXNTSC%AUFYM4YT4ITHPJWKNQJC%(%gznqi%fs%nrflj%kwtr%ymj%ithpjwknqj%qthfyji%ns%ymj%ln{js%inwjhytw~$ithpjw%nrfljx%(%qnxy%fqq%qthfq%f{fnqfgqj%nrfljx$$ithpjw%xjfwhm%ANRFLJdSFRJC%(%xjwfhm%nrfljdsfrj%ymwtzlm%Ithpjw%Mzg$ithpjw%uzqq%ANRFLJdSFRJC%(%it|sqtfi%nrfljdsfrj%qthfqq~%kwtr%Ithpjw%Mzg$$(Ithpjwknqj$KWTR%AnrfljdgfxjC$RFNSYFNSJW%A~tzwdsfrjC%{jwxnts?%A{jwxntsdszrgjwC$WZS%Ahtrrfsidytdj}jhzyjC$J]UTXJ%Autwydytdj}utxjC$HTU^%AufymdtsdmtxydrfhmnsjC%AufymdtsdhtsyfnsjwC$JSYW^UTNSY%Ahtrrfsidytdwzsd|mjsdxyfwynsldhtsyfnsjwC$$
+```
 
-Il rendra alors le message dechiffré sur la sortie standard. Donnez ce message au responsable de TP pour acceder à la suite.
+> On précise que Bob avait demandé LSR quand même !
+
+Pour déchiffrer ce message, il vous faut exécuter du code ```ruby``` sur votre machine. Seulement, ```ruby``` n'est pas installé sur la machine qui vous est fournie. Mais comme Bob a suivi le cours sur Docker, il a mis à disposition une image sur ```docker hub```. Cette image embarque l'environement nécessaire pour faire tourner son super programme pour déchiffrer le message.
+
+> "Merci qui ? 😉"
+
+> "Merci Bob bien sûr !" (tu t'es cru où là ?) #JM4ever
+
+
+Vous devez créer un container à partir de l'image ```fthomasmorel/tp_docker_insa```. Lancez ce container afin qu'il exécute la commande ```decrypt``` qui prend en paramètre la chaîne de caractères chiffrée entre ```''```.
 
 ## Cheatsheet Docker
 
@@ -198,20 +224,23 @@ docker run [...] -v path/to/host/dir:path/to/container/dir <IMAGE> <COMMAND_TO_E
 docker ps # list all running container
 docker stop <CONTAINER_ID> # stop a given container its ID
 docker stop <NAME_ID> # stop a given container with its name
+docker start <CONTAINER_ID> # start a given container its ID
+docker start <NAME_ID> # start a given container with its name
+docker attach <CONTAINER_ID> # attach a daemonized docker
 
 docker build -t <NAME:VERSION> <PATH/TO/DOCKERFILE> # build an image from the dockerfile located in the given directory
 docker images # list all local available images
 
 docker search <IMAGE_NAME> # serach image_name through Docker Hub
 docker pull <IMAGE_NAME> # download image_name locally from Docker Hub
-```
 
-### Dockerfile
-```
+#Dockerfile
 FROM <image_base>
 MAINTAINER <your_name> version: <version_number>
 RUN <command_to_execute>
 EXPOSE <port_to_expose>
+COPY <path_on_host_machine> <path_on_container>
+ENTRYPOINT <command_to_run_when_starting_container>
 ```
 
 
@@ -219,7 +248,7 @@ EXPOSE <port_to_expose>
 
 Dans cette deuxième partie, vous allez devoir monter une architecture avec un client web, une API Ruby et une base de données _moderne_ mongoDB.
 
-Commencez par créer un répertoire nommé ```RubyChat```. Clonez les deux GIT suivants dans ce repertoire :
+Commencez par créer un répertoire nommé ```RubyChat```. Clonez les deux GIT suivants dans ce répertoire :
 
 ```
 git clone https://github.com/fthomasmorel/RubyChat-frontend.git RubyChat-Front
@@ -228,11 +257,11 @@ git clone https://github.com/fthomasmorel/RubyChat-backend.git RubyChat-Back
 
 ### RubyChat
 
-RubyChat est une application en passe de rivaliser avec les plus grandes applications _moderne_ de messageries instantanné tel que AIM, MSN ou ICQ.
+RubyChat est une application en passe de rivaliser avec les plus grandes applications _modernes_ de messageries instantannées telles que AIM, MSN ou ICQ.
 
-La particularité de RubyChat est qu'il n'existe qu'un seul et unique canal. En outre, tous les messages sont centralisé sur une seule fenetre de conversation. Cela permet de communiquer avec le monde entier de manière très simple 🖖🏼.
+La particularité de RubyChat est qu'il n'existe qu'un seul et unique canal. En outre, tous les messages sont centralisés sur une seule fenêtre de conversation. Cela permet de communiquer avec le monde entier de manière très simple 🖖🏼.
 
-D'un point de vue technique, l'application est composée d'une API REST Ruby qui met a disposition 2 endpoints:
+D'un point de vue technique, l'application est composée d'une API REST Ruby qui met à disposition deux endpoints:
 
 ```
 GET /messages # return all the messages of the chat
@@ -251,18 +280,18 @@ Un message a pour structure :
 
 De l'autre coté, une partie front-end, écrite en AngularJS, permet d'afficher l'ensemble des messages ainsi que d'en envoyer.
 
-L'application est en train de grimper dans les charts, et l'équipe de développeur commence a penser au future. 
+L'application est en train de grimper dans les charts, et l'équipe de développeurs commence à penser au futur.
 
-- Comment rendre l'application RubyChart scalable pour supporter la charge des futures 100 000 000 d'utilisateurs ? 
+- Comment rendre l'application RubyChart "scalable" pour supporter la charge des futurs 100 000 000 d'utilisateurs ? 
 - Comment permettre aux développeurs de maintenir facilement leur code ?
 - Quel workflow adopté ?
 
 ### RubyChat-Back
 
-La partie backend de l'application a été écrite en ```ruby```. Ce langage utilise un gestionnaire de paquet appelé ```gem```. Cela permet d'installer des dépendences facilement :
+La partie backend de l'application a été écrite en ```ruby```. Ce langage utilise un gestionnaire de paquets appelé ```gem```. Cela permet d'installer des dépendences facilement :
 
 ```
-gem install <package> # install the given package on the machine
+gem install <packages> # install the given package on the machine
 ```
 
 Voici les dépendences de l'API :
@@ -275,11 +304,11 @@ sinatra-cross_origin		# sinatra stuff to handle cross_origin
 json						# json lib
 ```
 
-Le code entier de l'API est contenu dans ```rubychat.rb```. L'application recoit des requetes HTTP sur le port ```8080```.
+Le code entier de l'API est contenu dans ```rubychat.rb```. L'application reçoit des requêtes HTTP sur le port ```8080```.
 
 ### RubyChat-Front
 
-L'application web, quant a elle, a été ecrite avec le framework AngularJS (v1). Voici l'architecture du repertoire RubyChat-Front :
+L'application web, quant à elle, a été écrite avec le framework AngularJS (v1). Voici l'architecture du rèpertoire RubyChat-Front :
 
 ```
 |
@@ -295,6 +324,7 @@ L'application web, quant a elle, a été ecrite avec le framework AngularJS (v1)
 |--app.config.js 		# define constant for the web app (API URL)
 |--app.js				# define the AngularJS app
 |--index.html			# the index page of the web app
+|--nginx.conf			# nginx config file TO COMPLETE
 |--LICENCE				# who cares?
 ```
 
@@ -302,30 +332,30 @@ L'application web, quant a elle, a été ecrite avec le framework AngularJS (v1)
 
 ![](img/rubychat_architecture.png)
 
-Le serveur web ```nginx``` permet de servir les fichiers de la partie web. Aussi, il redirige les requetes qui arrive sur ```/api``` vers l'application ```ruby```. Cette dernière communique avec la base de données ```mongodb```.
+Le serveur web ```nginx``` permet de servir les fichiers de la partie web. Aussi, il redirige les requêtes qui arrivent sur ```/api``` vers l'application ```ruby```. Cette dernière communique avec la base de données ```mongo```.
 
 ## Docker-compose
 
-Afin de répondre au problématique posées par les developpeurs de RubyChat, vous allez devoir dockerizer les differents module de l'application. Le but de l'exercice est de voir comment on peut monter une architecture tel que celle de RubyChat en utilsant des containers.
+Afin de répondre aux problématiques posées par les développeurs de RubyChat, vous allez devoir "dockeriser" les différents modules de l'application. Le but de l'exercice est de voir comment on peut monter une architecture telle que celle de RubyChat en utilsant des containers.
 
 ### RubyChat-Front
 
-La première étapes consiste a créer des containers pour chacunes des instances suivantes :
+La première étape consiste à créer des containers pour chacune des instances suivantes :
 
-- l'application ruby
+- L'application ruby
 - mongoDB
 - nginx
 
 ### Ruby
 
-Créez un ```Dockerfile``` dans le repertoire ```RubyChat-Back```. En partant de l'image docker de base ```ruby```, vous allez devoir définir l'envirionement necessaire a la bonne execution du script ```rubychat.rb``` (cf. définition plus haut). Vous devez :
+Créez un ```Dockerfile``` dans le répertoire ```RubyChat-Back```. En partant de l'image docker de base ```ruby```, vous allez devoir définir l'environement nécessaire à la bonne exécution du script ```rubychat.rb``` (cf. définition plus haut). Vous devez :
 
-- Installer les dépendences sur le containers
-- Copier le code source sur le containers
+- Installer les dépendences sur le container
+- Copier le code source sur le container
 - Exposer le port de l'API
-- Définir un point d'entré pour executer ```rubychat.rb```
+- Définir un point d'entrée pour exécuter ```rubychat.rb```
 
-Une fois le ```Dockerfile``` définit, vous pouvez le build avec la commande suivante :
+Une fois le ```Dockerfile``` défini, vous pouvez le build avec la commande suivante :
 
 ```
 docker build -t ruby_api:v1 .
@@ -335,29 +365,37 @@ Le container ```ruby``` n'ayant pas accès à la base de données mongoDB, il ne
 
 ### nginx
 
-Pour le container ```nginx```, nous allons partir de l'image de base docker ```nginx```. Dans le repertoire ```RubyChat-Front```, créer un fichier ```Dockerfile```. Puis, vous devez :
+Pour le container ```nginx```, nous allons partir de l'image de base Docker ```nginx```. Dans le répertoire ```RubyChat-Front```, créez un fichier ```Dockerfile```. Puis, vous devez :
 
 - Partir de l'image de base ```nginx```
-- Copier un fichier de configuration pour nginx dans ```/etc/nginx/nginx.conf```
-- Copier l'ensemle des fichiers ```angularJS``` sur le container
-- Exposer le port d'écoute de votre ```nginx```.
+- Copier le fichier ```nginx.conf``` du répertoire Front dans ```/etc/nginx/nginx.conf``` côté container.
+- Copier l'ensemble des fichiers ```angularJS``` sur le container
+- Exposer le port d'écoute de votre ```nginx``` (port 80).
 
 Enfin, vous pouvez build ce container :
 
 ```
 docker build -t rubychat_nginx:v1 .
 ```
-Pour le moment, nginx ne connait pas encore le host pour joindre l'API ruby, il ne vous ai pas possible de lancer le container pour l'instant.
+Pour le moment, nginx ne connait pas encore le host pour joindre l'API ```ruby```, il ne vous est pas possible de lancer le container pour l'instant.
 
 ### mongoDB
 
-Pour le container ```mongoDB```, rien de plus simple. Il suffit d'utiliser l'image de base docker ```mongodb```. Elle vous permettra de faire tourner une instance de mongoDB facilement.
+Pour le container ```mongoDB```, rien de plus simple. Il suffit d'utiliser l'image de base Docker ```mongo```. Elle vous permettra de faire tourner une instance de mongoDB facilement.
 
 ### Configurer docker-compose
 
-```docker-compose``` a besoin de deux fichiers pour être configuré. Un fichier ```docker-compose.yml``` qui permet de définir les containers et leur liens, et un fichier ```requirements.txt``` qui permet de lister les images necessaires à l'architecture définit dans le ```docker-compose.yml```.
+Premièrement, installez ```docker-compose``` avec les commandes suivantes :
 
-À la racine du dossier ```RubyChat```, créez ces deux fichiers. Dans le fichier ```requirements.txt```, listez les images de base que vos containers utilises :
+```
+$ curl -L "https://github.com/docker/compose/releases/download/1.8.1/docker-compose-$(uname -s)-$(uname -m)" > /usr/bin/docker-compo
+$ chmod +x /usr/local/bin/docker-compose
+$ docker-compose --version
+```
+
+```docker-compose``` a besoin de deux fichiers pour être configuré. Un fichier ```docker-compose.yml``` qui permet de définir les containers et leur liens, et un fichier ```requirements.txt``` qui permet de lister les images nécessaires à l'architecture définie dans le ```docker-compose.yml```.
+
+À la racine du dossier ```RubyChat```, créez ces deux fichiers. Dans le fichier ```requirements.txt```, listez les images de bases que vos containers utilisent :
 
 ```
 ruby
@@ -365,15 +403,15 @@ mongo
 nginx
 ```
 
-Dans le fichier ```docker-compose.yml```, completez le squelette suivant et supprimez les commentaires :
+Dans le fichier ```docker-compose.yml```, complétez le squelette (un vrai, cette fois) suivant :
 
 ```
 version: '2'
 services:
   nginx:
     build: ...		# Path to your web server Dockerfile
-    ports:
-     - ...			# Port binding between the host machine and the nginx 
+    ports:			# Port binding between the host machine and the nginx 
+     - "<PORT_HOST>:<PORT_CONTAINER>"	
     depends_on:
       - ... 		# Container on which nginx depends on
   ruby_api:
@@ -384,12 +422,12 @@ services:
     image: ...		# Image for the mongodb container
 ```
 
-Penser à mettre à jour les URL de l'API dans la partie AngularJS et aussi l'host pour la base de donnée dans le code de l'API ruby. Pour tester votre installation, utilisez :
+Pensez à mettre à jour les URL de l'API dans la partie ```AngularJS``` et aussi l'host pour la base de données dans le code de l'API ```ruby```. Pour tester votre installation, utilisez :
 
 ```
 docker-compose up # use the --build option to force rebuilding images
 ```
 
-Utilisez votre instance de RubyChat sur [http://localhost:PORT/login](). 
+Utilisez votre instance de RubyChat sur [http://VOTRE_ADRESSE_IP/login](). 
 
 # 🐳
