@@ -195,5 +195,13 @@ Grâce à Docker, il est possible de containériser une application, avec pour c
 
 Sources:
 http://www.journaldunet.com/solutions/cloud-computing/1146290-cloud-pourquoi-docker-peut-tout-changer/
-
 https://www.wanadev.fr/23-tuto-docker-comprendre-docker-partie1/
+
+
+**Docker Hub: Comment automatiser son workflow**
+
+La construction d'une image docker peut parfois être longue et répétitive lorsqu'il s'agit de mettre à jour un ou plusieurs _layers_ de son image. Il peut aussi être nécessaire d'intégrer à son _workflow_ la construction d'_images_ en fin de chaîne pour ensuite les distribuer facilement. La plateforme Docker Hub propose gratuitement pour des projets open source, de se lier à votre compte Github afin de récréer une image à chaque modification sur votre _repository_. Pour cela, il suffit simplement de lier votre Github à Docker Hub. Ensuite, en créant un simple _repository_ contenant votre Dockerfile, il est possible de faire en sorte qu'à chaque _commit_, _l'image_ soit recréée automatiquement et ensuite proposée sur la plateforme Docker Hub. Dès lors, un simple `docker pull <login>/<image>` suffira à télécharger l'image depuis n'importe qu'elle instance Docker. Pour allez plus loin, sachez qu'il est possible d'héberger soi-même son propre registre docker afin de garder privé ses images.
+
+Sources:
+https://docs.docker.com/registry/deploying/
+https://hub.docker.com/
