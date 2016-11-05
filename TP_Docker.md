@@ -110,16 +110,6 @@ En vous aidant du cours, créez un fichier ```Dockerfile``` qui :
 - Installe un ```nginx```
 - Expose le port 80
 
-
-
-```
-FROM ubuntu
-MAINTAINER FTM version: 0.1
-RUN apt-get update && apt-get install -y nginx
-EXPOSE 80
-RUN "nginx"
-```
-
 Buildez l'image de votre container basé sur le Dockerfile en utilisant la commande suivante :
 
 ```
@@ -210,39 +200,6 @@ Pour déchiffrer ce message, il vous faut exécuter du code ```ruby``` sur votre
 
 
 Vous devez créer un container à partir de l'image ```fthomasmorel/tp_docker_insa```. Lancez ce container afin qu'il exécute la commande ```decrypt``` qui prend en paramètre la chaîne de caractères chiffrée entre ```''```.
-
-## Cheatsheet Docker
-
-### Docker in CLI
-```
-docker run <IMAGE> <COMMAND_TO_EXECUTE> # start a container
-docker run -it <IMAGE> /bin/bash # start a container and get the shell
-docker run -d <IMAGE> <COMMAND_TO_EXECUTE> # start a container in the background
-docker run [...] -p PORT_HOST:PORT_DEST <IMAGE> <COMMAND_TO_EXECUTE> # bind port of a container
-docker run [...] -v path/to/host/dir:path/to/container/dir <IMAGE> <COMMAND_TO_EXECUTE> # share volume between host machine and container
-
-docker ps # list all running container
-docker stop <CONTAINER_ID> # stop a given container its ID
-docker stop <NAME_ID> # stop a given container with its name
-docker start <CONTAINER_ID> # start a given container its ID
-docker start <NAME_ID> # start a given container with its name
-docker attach <CONTAINER_ID> # attach a daemonized docker
-
-docker build -t <NAME:VERSION> <PATH/TO/DOCKERFILE> # build an image from the dockerfile located in the given directory
-docker images # list all local available images
-
-docker search <IMAGE_NAME> # serach image_name through Docker Hub
-docker pull <IMAGE_NAME> # download image_name locally from Docker Hub
-
-#Dockerfile
-FROM <image_base>
-MAINTAINER <your_name> version: <version_number>
-RUN <command_to_execute>
-EXPOSE <port_to_expose>
-COPY <path_on_host_machine> <path_on_container>
-ENTRYPOINT <command_to_run_when_starting_container>
-```
-
 
 ## RubyChat
 
