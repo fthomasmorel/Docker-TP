@@ -126,6 +126,13 @@ La directive __COPY__ permet d'ajouter des fichiers ou dossiers dans _l'image_. 
 
 La directive __ADD__ ressemble beaucoup à la directive __COPY__. Cependant, la directive __ADD__ autorise les url pour _src_ et si c'est un archive, elle sera automatiquement décompressée.
 
+####ENTRYPOINT
+
+	ENTRYPOINT ["executable", "param1", "param2"]
+	ENTRYPOINT command param1 param2
+
+L'objectif de la directive __ENTRYPOINT__ est de rendre exécutable un _conteneur_. Les arguments passés après `docker run <image>` seront ajoutés à la suite des éléments de la directive __ENTRYPOINT__ et écraseront les arguments de la directive __CMD__. Tout comme la directive __CMD__, seule la dernière directive __ENTRYPOINT__ sera prise en compte.
+
 ####Exemple de Dockerfile
 
 	# Firefox over VNC
