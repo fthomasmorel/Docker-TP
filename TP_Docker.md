@@ -305,7 +305,7 @@ La première étape consiste à créer des containers pour chacune des instances
 
 ### Ruby
 
-Créez un ```Dockerfile``` dans le répertoire ```RubyChat-Back```. En partant de l'image docker de base ```ruby```, vous allez devoir définir l'environement nécessaire à la bonne exécution du script ```rubychat.rb``` (cf. définition plus haut). Vous devez :
+Créez un ```Dockerfile``` dans le répertoire ```RubyChat-Back```. En partant de l'image docker de base ```ruby```, vous allez devoir définir l'environnement nécessaire à la bonne exécution du script ```rubychat.rb``` (cf. définition plus haut). Vous devez :
 
 - Installer les dépendences sur le container
 - Copier le code source sur le container
@@ -345,7 +345,7 @@ Pour le container ```mongoDB```, rien de plus simple. Il suffit d'utiliser l'ima
 Premièrement, installez ```docker-compose``` avec les commandes suivantes :
 
 ```
-$ curl -L "https://github.com/docker/compose/releases/download/1.8.1/docker-compose-$(uname -s)-$(uname -m)" > /usr/bin/docker-compo
+$ curl -L "https://github.com/docker/compose/releases/download/1.8.1/docker-compose-$(uname -s)-$(uname -m)" > /usr/bin/docker-compose
 $ chmod +x /usr/local/bin/docker-compose
 $ docker-compose --version
 ```
