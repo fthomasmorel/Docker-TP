@@ -36,7 +36,25 @@ Pour résumer, voici les quatre périodes clées à retenir sur la virtualisatio
 
 ## Virtualisation lourde
 
-TODO
+Chaque machine possède des ressources matérielles (CPU, RAM, disques, etc.). Toutes ces ressources sont utilisées par des applications en s’appuyant sur un système d’exploitation (utilisation indirecte).
+
+Le principe de la virtualisation est de partager ces ressources entre différents systèmes d’exploitation. Pour cela, la virtualisation doit respecter deux principes fondamentaux :
+
+1. __le cloisonnement__ : chaque système d’exploitation a un fonctionnement indépendant et ne peut interférer avec les autres ;
+2. __la transparence__ : fonctionner en mode virtualisé ne change rien au fonctionnement du système d’exploitation et à ses applications.
+
+Cette virtualisation s'effectue avec ce que l'on appelle un hyperviseur, qui est une plateforme permettant à plusieurs systèmes d’exploitation de travailler sur une même machine en même temps.
+
+Nous allons nous intéresser ici à un seul type de d'hyperviseur, celui de type II.
+
+Cet hyperviseur (de type II) est en fait un "simple" logiciel (exemple : VirtualBox) qui tourne directement sur le système d'exploitation de votre machine. Il virtualise le matériel pour les OS invités qui croient alors dialoguer directement avec les ressources matérielles. Cependant le CPU est directement accessible.
+
+Le doublet OS invité-Applications forme ce que l'on appelle une machine virtuelle, comme le résume le schéma suivant :
+![Machine Virtuelle](http://www.upload-image.fr/images/2016/11/06/vm.png)
+
+On a donc bien cloisonné les applications qui tournent sur des systèmes d'exploitation différents. Cependant, cette technique est lourde car elle fait intervenir plusieurs systèmes d'exploitation...
+
+Pour information, d'autres types de virtualisation lourde existent (par exemple avec un hyperviseur de type I ou _Bare Metal_). Si cela vous intéresse, vous pourrez trouver des schémas et explications simples sur la page [Wikipedia](https://fr.wikipedia.org/wiki/Virtualisation) ou bien dans ce [cours](http://flauzac.eu/wp-content/uploads/2016/05/cours1.pdf).
 
 ## Virtualisation légère
 
