@@ -58,7 +58,12 @@ Pour information, d'autres types de virtualisation lourde existent (par exemple 
 
 ## Virtualisation légère
 
- TODO
+Docker reprend les principes de cloisonnement et de transparence pour offrir une solution de virtualisation qui isole les applications dans ce qu'on appelle des conteneurs.
+
+Ici, pas d'hyperviseur ni de système d'exploitation supplémentaire, Docker s'appuie sur le format de conteneur Linux standard (LXC) pour offrir une solution de virtualisation qui exécute les processus de façon isolée, comme le présente le schéma suivant :
+![Machine Virtuelle](http://www.upload-image.fr/images/2016/11/06/container.png)
+
+Cette solution étend les fonctionnalités du système d’exploitation fournies par l'infrastructure sous-jacente. Le véritable avantage de cette solution, outre sa légèreté, est d'automatiser le déploiement d'applications de manière flexible que ce soit sur une machine locale, dans le _cloud_, sur une machine nue (comme dans le TP), etc.
 
 ## Comparaison
 
