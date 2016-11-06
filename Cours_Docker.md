@@ -27,23 +27,30 @@ Dans les années 2000, ces travaux ont été popularisés sur les architectures 
 
 En 2013, une nouvelle technique de virtualisation plus légère est apparu avec Docker, basée sur le système Linux de virtualisation LXC (Linux Containers).
 
-Pour résumer, quatre périodes clées à retenir sur la virtualisation :
- 1. 1970 : début de la virtualisation sur marchines professionnelles spécifiques
- 2. 1980-90 : virtualisation sur ordinateurs personnels
- 3. 2000 : popularisation de la virtualisation
- 4. 2010 : nouveau système léger : Docker
+Pour résumer, voici les quatre périodes clées à retenir sur la virtualisation :
 
- **Virtualisation lourde**
+1. 1970 : début de la virtualisation sur marchines professionnelles spécifiques
+2. 1980-90 : virtualisation sur ordinateurs personnels
+3. 2000 : popularisation de la virtualisation
+4. 2010 : nouveau système léger : Docker
 
- TODO
+**Virtualisation lourde**
 
- ** Virtualisation légère**
+TODO
 
- TODO
-
- ** Comparaison**
+**Virtualisation légère**
 
  TODO
+
+**Comparaison**
+
+Pour comparer les performances des machines virtuelles et des containers Docker, voici un tableau de comparaison ([Source](http://fr.slideshare.net/Flux7Labs/performance-of-docker-vs-vms)) :
+
+|           | Machine virtuelle | Container Docker |
+|-----------|-------------------|------------------|
+| Taille    |    Quelques Go    |    Quelques Mo   |
+| Démarrage |      ~ 30-45s     |      ~ 50ms      |
+| Arrêt     |      ~ 5-10s      |      ~ 50ms      |
 
 **Un peu de vocabulaire**
 
