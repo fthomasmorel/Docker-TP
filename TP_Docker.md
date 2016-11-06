@@ -2,7 +2,9 @@
 
 ## Objectif
 
-Le but de ce TP est de prendre en main Docker et de comprendre pourquoi cet outil est de plus en plus utilisé. Pour cela, une première partie va vous permettre de vous familiariser avec le principe de Docker. Dans une deuxième partie, vous allez monter une architecture complète composée d'un serveur, d'une application et d'une base de données. En utilisant Docker, cette architecture sera facilement déployable et "scalable".
+Le but de ce TP est de prendre en main Docker et de comprendre pourquoi cet outil est de plus en plus utilisé. Pour cela, une première partie va vous permettre de vous familiariser avec le principe de Docker. 
+
+Dans une deuxième partie, vous allez monter une architecture complète composée d'un serveur, d'une application et d'une base de données. En utilisant Docker, cette architecture sera facilement déployable et "scalable".
 
 ## Premiers Pas
 
@@ -192,7 +194,7 @@ ji%ithpjw$$ithpjw%gznqi%2y%ASFRJ?[JWXNTSC%AUFYM4YT4ITHPJWKNQJC%(%gznqi%fs%nrflj%
 
 > On précise que Bob avait demandé LSR quand même !
 
-Pour déchiffrer ce message, il vous faut exécuter du code ```ruby``` sur votre machine. Seulement, ```ruby``` n'est pas installé sur la machine qui vous est fournie. Mais comme Bob a suivi le cours sur Docker, il a mis à disposition une image sur ```docker hub```. Cette image embarque l'environement nécessaire pour faire tourner son super programme pour déchiffrer le message.
+Pour déchiffrer ce message, il vous faut exécuter du code ```ruby``` sur votre machine. Seulement, ```ruby``` n'est pas installé sur la machine qui vous est fournie. Mais comme Bob a suivi le cours sur Docker, il a mis à disposition une image sur ```docker hub```. Cette image embarque l'environnement nécessaire pour faire tourner son super programme pour déchiffrer le message.
 
 > "Merci qui ? 😉"
 
@@ -265,7 +267,7 @@ Le code entier de l'API est contenu dans ```rubychat.rb```. L'application reçoi
 
 ### RubyChat-Front
 
-L'application web, quant à elle, a été écrite avec le framework AngularJS (v1). Voici l'architecture du rèpertoire RubyChat-Front :
+L'application web, quant à elle, a été écrite avec le framework AngularJS (v1). Voici l'architecture du répertoire RubyChat-Front :
 
 ```
 |
@@ -346,7 +348,7 @@ Premièrement, installez ```docker-compose``` avec les commandes suivantes :
 
 ```
 $ curl -L "https://github.com/docker/compose/releases/download/1.8.1/docker-compose-$(uname -s)-$(uname -m)" > /usr/bin/docker-compose
-$ chmod +x /usr/local/bin/docker-compose
+$ chmod +x /usr/bin/docker-compose
 $ docker-compose --version
 ```
 
