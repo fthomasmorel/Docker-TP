@@ -185,7 +185,7 @@ Vous pouvez retrouver l'intégralité des directives et d'autres exemples dans l
 
 ### docker-compose.yml
 
-Pour utiliser ```docker-compose``` il suffit de créer un fichier ```docker-compose.yml```. Dedans, on y définit les services et leurs lien. Dans un ```Dockerfile``` on définit le container mais on ne définit pas les paramètres de "lancement" de ce container. C'est a cela que sert le fichier ```docker-compose.yml```.
+Pour utiliser ```docker-compose``` il suffit de créer un fichier ```docker-compose.yml```. Dedans, on y définit les services et leurs liens. Dans un ```Dockerfile```, on définit le container mais on ne définit pas les paramètres de "lancement" de ce container. C'est le rôle du fichier ```docker-compose.yml```.
 
 Voici la structure d'un fichier ```docker-compose.yml``` :
 
@@ -194,9 +194,9 @@ version: '2'
 services:				# list of services
   service_1:			# name of the service
     build: 	 			# how to build the container
-    	context: ./path/to/dockerfile
+    	context: ./path/to/dockerfile	
     	dockerfile: name_of_dockerfile
-    ports:				# which port to bind
+    ports:				# which port to bind 
       - "<port_host>:<port_container>"
     volume: 			# which volume to share
       - "<host_dir>:<container_dir>"
@@ -204,14 +204,14 @@ services:				# list of services
       - service_2
   service_2:
 						# how to build the container
-    image: docker_image_name
-```
+    image: docker_image_name 
+``` 
 
 La liste de toutes les instructions est disponible [ici](https://docs.docker.com/compose/compose-file/).
 
 ### BUILD
 
-L'instruction ```build``` permet de spécifier comment créer le container qui caracterise le service X. Cette instruction peut avoir plusieurs paramètres. Par défaut, il suffit juste de lui donner le chemin vers le répertoire ou ce trouve le ```Dockerfile```.
+L'instruction ```build``` permet de spécifier comment créer le container qui caractérise le service X. Cette instruction peut avoir plusieurs paramètres. Par défaut, il suffit juste de lui donner le chemin vers le répertoire où se trouve le ```Dockerfile```.
 
 ```
 ...
@@ -220,18 +220,18 @@ L'instruction ```build``` permet de spécifier comment créer le container qui c
 ...
 ```
 
-Si le nom du ```Dockerfile``` diffère, on peut spécifier :
+Si le nom du ```Dockerfile``` diffère, on peut le spécifier :
 
 ```
 ...
 	service_1:
-		build:
+		build: 
 			context: ./path/to/Dockerfile
 			dockerfile: name_of_dockerfile
 ...
 ```
 
-D'autres options existe mais ne sont pas utilisé dans ce cours.
+D'autres options existent mais ne sont pas présentées dans ce cours.
 
 ### PORT
 
@@ -240,7 +240,7 @@ L'instruction ```port``` permet de spécifier le binding avec la machine host. C
 ```
 ...
 	service_1:
-		port:
+		port: 
 			- "9000":"80"
 			- "9001":"81"
 ...
@@ -253,7 +253,7 @@ L'instruction ```volume``` permet de spécifier le partage de volume avec la mac
 ```
 ...
 	service_1:
-		volume:
+		volume: 
 			- .:/code 	# share current dir in /code
 			- /tmp		# share /tmp in /tmp
 			- /tmp:/foo	# share /tmp in /foo
@@ -262,7 +262,7 @@ L'instruction ```volume``` permet de spécifier le partage de volume avec la mac
 
 ### IMAGE
 
-Lorsque nous n'avons pas besoin de ```Dockerfile``` mais nous souhaitons définir notre container à partir d'une image de base ```Docker```, on peut utiliser la directive ```image``` afin de spécifier à partir de quelle image, le container (associé au service) doit être définit. Ici, on définit une instance de ```mongodb``` à partir de son image "officielle" Docker :
+Lorsque nous n'avons pas besoin de ```Dockerfile``` mais que nous souhaitons définir notre container à partir d'une image de base ```Docker```, on peut utiliser la directive ```image``` afin de spécifier à partir de quelle image, le container (associé au service) doit être défini. Ici, on définit une instance de ```mongodb``` à partir de son image "officielle" Docker :
 
 ```
 ...
@@ -273,9 +273,9 @@ Lorsque nous n'avons pas besoin de ```Dockerfile``` mais nous souhaitons défini
 
 ### DEPENDS_ON
 
-Cette directive est l'une des plus importante. Elle permet de lier plusieurs containers entre eux. Cela permet aussi d'injecter dans le fichier ```/etc/host``` du container, le nom de domaine du container dont dépend le service définit. Voici un exemple concret :
+Cette directive est l'une des plus importantes. Elle permet de lier plusieurs containers entre eux. Cela permet aussi d'injecter dans le fichier ```/etc/host``` du container, le nom de domaine du container dont dépend le service définit. On présente par la suite un exemple concret.
 
-L'application X a été developpé en ```go lang```. Elle a besoin d'une instance de ```redis``` (une base de donnée en mémoire centrale) pour tourner. Dans le code de l'applicaiton ```go lang```, on retrouve un fichier de configuration pour définir les constantes de l'application, par exemple, l'adresse du serveur ```redis```.
+L'application X a été developpée en ```go lang```. Elle a besoin d'une instance de ```redis``` (une base de données en mémoire centrale) pour tourner. Dans le code de l'applicaiton ```go lang```, on retrouve un fichier de configuration pour définir les constantes de l'application, par exemple, l'adresse du serveur ```redis```.
 
 On souhaite dockeriser cette architecture. Mais avant de lancer à l'avance les containers, on ne sait pas quelle adresse aura le container faisant tourner ```redis```. On utilise alors un nom de domaine, celui du service.
 
@@ -285,32 +285,32 @@ Voici le fichier ```docker-compose.yml``` associé :
 version: '2'
 services:				# list of services
   app_go:				# go lang service
-    build: ./my_golang_app
+    build: ./my_golang_app	
     ports:				
       - "80:9000" 		# the app is running on port 9000
     depends_on:			# the app depends on redis
       - redis_service
   redis_service:
-    image: redis 		# building the redis container from the official image
+    image: redis 		# building the redis container from the official image 
 ```
 
-Au lancement de ```docker-compose```, ce dernier va injecter dans le fichier ```/etc/host``` du container ```app_go```, le couple (nom de service, adresse IP) des containers listé dans les dépendences. Dans notre cas, l'entrée suivante sera ajouté :
+Au lancement de ```docker-compose```, ce dernier va injecter dans le fichier ```/etc/host``` du container ```app_go```, le couple (nom de service, adresse IP) des containers listés dans les dépendences. Dans notre cas, l'entrée suivante sera ajoutée :
 
 ```
 redis_service 172.17.0.3
 ```
 
-Ainsi, depuis le container ```app_go```, on pourra contacter l'instance de ```redis``` grace au nom de domaine ```redis_service```. Il faut donc penser a changer les constantes dans son code pour joindre les differents services que l'on dockerise.
+Ainsi, depuis le container ```app_go```, on pourra contacter l'instance de ```redis``` grâce au nom de domaine ```redis_service```. Il faut donc penser à changer les constantes dans son code pour joindre les différents services que l'on dockerise.
 
 ### Exécuter docker-compose
 
-Rien de plus simple. Placez vous dans le répertoire qui contient le fichier ```docker-compose.yml``` et exécuter :
+Rien de plus simple. Placez-vous dans le répertoire qui contient le fichier ```docker-compose.yml``` et exécutez :
 
 ```
 $ docker-compose up
 ```
 
-Pour forcer a builder les images, utilisez :
+Pour forcer à builder les images, utilisez :
 
 ```
 $ docker-compose up --build
@@ -318,12 +318,12 @@ $ docker-compose up --build
 
 ## Les bonnes pratiques
 
-###Pourquoi utiliser Docker? A quoi sert Docker?
+###Pourquoi utiliser Docker ? A quoi sert Docker ?
 
 Pour résumer, Docker permet de construire et partager très facilement des images disques. Il permet aussi de lancer facilement différents OS. De plus, contrairement à une VM, Docker est très léger en termes de configurations minimales.
 
 
-###Quand utiliser Docker?
+###Quand utiliser Docker ?
 
 Docker est utile dans de nombreuses situations et notamment quand :
 - on veut un système de contrôle de version pour un OS complet,
@@ -334,24 +334,25 @@ Docker est utile dans de nombreuses situations et notamment quand :
 
 ###Cas d'utilisation de Docker
 
-Prenons un cas d'utilisation simple et concret. Une entreprise rennaise, souhaite développer une application comme ils savent le faire. Leur équipe est composée de deux personnes.
-Valentin est un vieux de la vieille. Lui, Debian 7, c'est parfait.
+Prenons un cas d'utilisation simple et concret. Une entreprise rennaise, souhaite développer un projet Symfony comme ils savent le faire. Leur équipe est composée de deux personnes.
+Valentin est un vieux de la vieille. Lui, Debian 7, c'est parfait. De plus, il est ISO avec les serveurs de production.
 
-Florent lui est un vrai fanboyil ne jure que par Apple.
+Florent lui est un vrai hippie. Il dispose de la dernière distribution exotique. Pour lui, PHP, c'est la toute dernière version ou rien. Cependant, il peut générer du code qui ne peut pas s’exécuter correctement avec une version plus vieille, comme celle de Valentin.
+Jusqu'à aujourd'hui, la réponse donnée était : « faisons des tests unitaires ». Oui, cela répondait à une bonne partie de nos problèmes (à la condition de faire de bons tests unitaires complets).
 
 En effet, ça pose problème que deux développeurs ne travaillent pas sur les mêmes environnements...
-Mais on ne leur a pas laissé le choix, ils ont un serveur de production qui tourne sur ubuntu et ils utilisent ruby pour leur appli.
 
-Ils pourraient se compliquer la vie avec des montages obscurs mais ils ont suivi avec attention le cours sur Docker. Ils décident donc de définir un environnement commun grâce à Dockerfile.
-Dedans, ils peuvent définir tout ce dont ils ont besoin pour que leur application ruby tourne n'importe où, sous debian, mac os ou même ubuntu.
-Aussi, lors de l'ajout de fonctionnalités, ils peuvent modifier ce dockerfile pour ajouter de nouvelles dépendences ruby par exemple.
-Ainsi leur application tourne indépendemment de l'OS  sur lequel ils ont l'habitude de travailler et ça fonctionne correctement ! (évidemment tant qu'on ne push pas n'importe quoi sur le repo)..
+Du coup, grâce à Docker, on peut faire en sorte que Valentin et Florent travaillent sur les mêmes versions Linux sans craindre des problèmes de compatibilité entre leurs codes respectifs ?
 
-###Quels sont les vrais avantages de Docker?
+
+Exactement! Dans ce cas, le plus simple est de mettre en place un Dockerfile, document "chef d'orchestre" (présenté précédemment), qui permettra à Valentin et à Florent de monter une image similaire. En étant malin, ce Dockerfile sera calqué sur les éléments présents en production. De ce fait, Valentin et Florent en plus de travailler sur un environnement identique, seront sur un environnement similaire à celui de la production!
+
+###Quels sont les vrais avantages de Docker ?
 
 Comme le container n'embarque pas d'OS, à la différence de la machine virtuelle, il est par conséquent beaucoup plus léger que cette dernière. Il n'a pas besoin d'activer un second système pour exécuter ses applications.
 Cela se traduit par un lancement beaucoup plus rapide, mais aussi par la capacité à migrer plus facilement un container d'une machine physique à l'autre, du fait de son faible poids.
 Typiquement, une machine virtuelle pourra peser plusieurs Go, alors qu'un container nu représentera, lui, quelques Mo. Grâce à leur légèreté, les containers Docker sont portables de cloud en cloud.
+
 
 ####Côté développement
 
